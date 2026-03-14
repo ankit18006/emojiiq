@@ -1,0 +1,19 @@
+{
+  "appId": "com.emojiiq.game",
+  "appName": "EmojiIQ",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "launchAutoHide": true,
+      "backgroundColor": "#080818",
+      "splashFullScreen": true,
+      "splashImmersive": true,
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "dark",
+      "backgroundColor": "#080818"
+    }
+  }
+}

@@ -1,0 +1,78 @@
+name: Build EmojiIQ APK
+
+# Ye workflow GitHub pe code push karte hi ya manually trigger karne par APK build karega
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:   # Manual trigger button bhi milega GitHub pe
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest   # GitHub ke server pe run hoga, tera laptop kuch nahi karega!
+
+    steps:
+      # ── Step 1: Code checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ── Step 2: Node.js setup
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # ── Step 3: Java setup (Android ke liye zaruri)
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # ── Step 4: Android SDK setup
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      # ── Step 5: npm install
+      - name: Install dependencies
+        run: npm install
+
+      # ── Step 6: Vite build (React → dist/)
+      - name: Build web app
+        run: npm run build
+
+      # ── Step 7: Capacitor Android add
+      - name: Add Android platform
+        run: npx cap add android
+
+      # ── Step 8: Sync
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      # ── Step 9: Grant Gradle permission
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      # ── Step 10: Build DEBUG APK (no keystore needed)
+      - name: Build Debug APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --no-daemon --stacktrace
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
+
+      # ── Step 11: Upload APK as artifact (download kar sakta hai)
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: EmojiIQ-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30   # 30 din tak download available rahega
+
+      # ── Step 12: Show APK info
+      - name: APK Info
+        run: |
+          echo "✅ APK Build Successful!"
+          ls -lh android/app/build/outputs/apk/debug/
+          echo "👆 Upar 'Artifacts' section mein download karein!"
