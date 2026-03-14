@@ -497,7 +497,8 @@ export default function EmojiIQ() {
     inner:{maxWidth:520,margin:"0 auto",padding:"13px 13px 52px"},
     card:{background:C.card,border:`1px solid ${C.cardBorder}`,borderRadius:20,padding:"16px 14px",marginBottom:10},
     emojiDisp:{fontSize:50,textAlign:"center",letterSpacing:8,margin:"12px 0",filter:"drop-shadow(0 4px 14px rgba(200,120,255,0.45))"},
-    input:{width:"100%",boxSizing:"border-box",padding:"12px 14px",background:"rgba(255,255,255,0.08)",border:"2px solid rgba(255,255,255,0.15)",borderRadius:14,color:"#fff",fontSize:16,fontWeight:600,outline:"none",textAlign:"center",animation:shake?"shake 0.4s":"none",fontFamily:"inherit"},
+    input:{width:"100%",boxSizing:"border-box",padding:"12px 14px",background:"rgba(255,255,255,0.08)",border:"2px solid rgba(255,255,255,0.15)",borderRadius:14,color:"#fff",fontSize:16,fontWeight:600,outline:"none",textAlign:"center",fontFamily:"inherit"},
+    inputWrap:{animation:shake?"shake 0.4s":"none"},
     btnMain:{width:"100%",padding:"12px 0",borderRadius:14,border:"none",background:`linear-gradient(135deg,${C.purple},#8b5cf6)`,color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",marginTop:9,fontFamily:"inherit"},
     btnSec:{flex:1,padding:"10px 0",borderRadius:12,border:"1.5px solid rgba(255,255,255,0.18)",background:"transparent",color:"rgba(255,255,255,0.8)",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"},
     badge:{display:"inline-block",padding:"2px 10px",borderRadius:20,fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:.8,background:C.purpleDim,color:C.purple,marginBottom:3},
@@ -597,7 +598,22 @@ export default function EmojiIQ() {
       <p style={{color:C.muted,fontSize:11,margin:"2px 0 0"}}>What do these emojis represent?</p>
       <div style={S.emojiDisp}>{(p?.emojis||[]).join(" ")}</div>
       {feedback?.type!=="ok"&&<>
-        <input style={S.input} placeholder="Type your guess..." value={guess} onChange={e=>setGuess(e.target.value)} onKeyDown={e=>e.key==="Enter"&&onSubmit()} autoComplete="off"/>
+        {/* inputWrap pe shake animation — input pe nahi, warna keyboard close hoti hai mobile mein */}
+        <div style={S.inputWrap}>
+          <input
+            style={S.input}
+            placeholder="Type your guess..."
+            value={guess}
+            onChange={e=>setGuess(e.target.value)}
+            onKeyDown={e=>e.key==="Enter"&&onSubmit()}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="none"
+            spellCheck="false"
+            inputMode="text"
+            enterKeyHint="done"
+          />
+        </div>
         {hintsUsed>=1&&<div style={S.hintBox}>💡 {p?.hint1}</div>}
         {hintsUsed>=2&&<div style={{...S.hintBox,marginTop:5}}>💡 {p?.hint2}</div>}
         {hintsUsed>=3&&<div style={{...S.hintBox,marginTop:5}}>💡 {p?.hint3}</div>}
@@ -748,7 +764,9 @@ export default function EmojiIQ() {
           <div style={S.emojiDisp}>{puzzle?.emojis?.join(" ")}</div>
           {!dailyDone?(
             <>
-              <input style={S.input} placeholder="Type your answer..." value={guess} onChange={e=>setGuess(e.target.value)} onKeyDown={e=>e.key==="Enter"&&checkGuess(puzzle)}/>
+              <div style={S.inputWrap}>
+                <input style={S.input} placeholder="Type your answer..." value={guess} onChange={e=>setGuess(e.target.value)} onKeyDown={e=>e.key==="Enter"&&checkGuess(puzzle)} autoComplete="off" autoCorrect="off" autoCapitalize="none" spellCheck="false" inputMode="text" enterKeyHint="done"/>
+              </div>
               {hintsUsed>=1&&<div style={S.hintBox}>💡 {puzzle?.hint1}</div>}
               {hintsUsed>=2&&<div style={{...S.hintBox,marginTop:5}}>💡 {puzzle?.hint2}</div>}
               {hintsUsed>=3&&<div style={{...S.hintBox,marginTop:5}}>💡 {puzzle?.hint3}</div>}
@@ -838,7 +856,9 @@ export default function EmojiIQ() {
             </div>
           ):(
             <>
-              <input style={S.input} placeholder="Fastest wins! Type & Enter..." value={guess} onChange={e=>setGuess(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){checkGuess(puzzle);endMp(guess.trim().toLowerCase()===puzzle.answer.toLowerCase());}}} autoFocus/>
+              <div style={S.inputWrap}>
+                <input style={S.input} placeholder="Fastest wins! Type & Enter..." value={guess} onChange={e=>setGuess(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){checkGuess(puzzle);endMp(guess.trim().toLowerCase()===puzzle.answer.toLowerCase());}}} autoComplete="off" autoCorrect="off" autoCapitalize="none" spellCheck="false" inputMode="text" enterKeyHint="done"/>
+              </div>
               {feedback&&<div style={S.errBox}>{feedback.msg}</div>}
               <button style={S.btnMain} onClick={()=>{checkGuess(puzzle);if(guess.trim().toLowerCase()===puzzle.answer.toLowerCase())endMp(true);}}>Submit ✓</button>
             </>
