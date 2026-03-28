@@ -73,3 +73,14 @@ jobs:
         run: |
           echo "✅ SIGNED APK Ready!"
           ls -lh android/app/build/outputs/apk/release/
+
+        # ── Icon copy karo sab mipmap folders mein
+      - name: Add App Icon
+        run: |
+          ICON="resources/ic_launcher.png"
+          for DIR in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            mkdir -p android/app/src/main/res/mipmap-$DIR
+            cp $ICON android/app/src/main/res/mipmap-$DIR/ic_launcher.png
+            cp $ICON android/app/src/main/res/mipmap-$DIR/ic_launcher_round.png
+          done
+          echo "✅ Icons added!"
