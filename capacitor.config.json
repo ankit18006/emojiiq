@@ -1,7 +1,11 @@
 {
-  "appId": "com.emojiiq.game",
+   "appId": "com.emojiiq.game",
   "appName": "EmojiIQ",
   "webDir": "dist",
+  "android": {
+    "versionCode": 2,
+    "versionName": "1.0.1"
+  },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 1200,
